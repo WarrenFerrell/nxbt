@@ -194,7 +194,7 @@ class InputParser():
             # Check if we can load the next set of commands
             if not self.current_macro_commands and self.current_macro:
                 self.current_macro_commands = (
-                    self.current_macro.pop(0).strip(" ").split(" "))
+                    self.current_macro.pop(0).strip(" ").split())
 
                 # Timing metadata extraction
                 timer_length = self.current_macro_commands[-1]
@@ -318,7 +318,7 @@ class InputParser():
         while i < len(macro):
             line = macro[i]
             if line.startswith("LOOP"):
-                loop_count = int(line.split(" ")[1])
+                loop_count = int(line.split()[1])
                 loop_buffer = []
 
                 # Detect delimiter and record
