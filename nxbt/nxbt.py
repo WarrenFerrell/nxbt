@@ -266,7 +266,7 @@ class Nxbt():
             cm.shutdown()
             sys.exit(0)
 
-    def macro(self, controller_index, macro, block=True):
+    def macro(self, controller_index, macro, block=True, throw_error_if_not_connected=False):
         """Used to input a given macro on a specified controller.
         This is done by creating and passing an INPUT_MACRO
         message into the task queue with the given macro.
@@ -308,10 +308,13 @@ class Nxbt():
 
         if block:
             while True:
-                finished = (self.manager_state
-                            [controller_index]["finished_macros"])
-                if macro_id in finished:
+                controller = self.manager_state[controller_index]  
+                if macro_id in controller["finished_macros"]:
                     break
+                if (throw_error_if_not_connected and controller["state"] 
+                    not in ["connected", "reconnecting", "connecting"]):
+                    raise OSError("Blocked macro for controller is no longer connected, error:",
+                              self.state[controller_index]["errors"])
 
                 time.sleep(1/120)  # Wait one Pro Controller cycle
 
